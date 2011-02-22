@@ -1,0 +1,36 @@
+JFrame Tiro Parabolico
+
+Requerimiento:
+
+Se desea que hagas un JFrame que permita al usuario con el mouse dar un clic en el objeto animado (por ejemplo en la pelota)
+y con las flechas mover el objeto receptor( por ejemplo la cesta), la cual se mueve solo en la parte de la derecha del Frame (solo las flechas izquierda y derecha). 
+La pelota debe de mostrar un tiro parabólico el cual debe ser al azar y no puede caer fuera del Frame ni antes de la
+mitad del Frame donde puede caer la pelota. Si el objeto animado es cachado por el objeto receptor
+deberas de aumentar 2 puntos y emitir un sonido de alegria, si por el contrario no se cacha el objeto
+entonces emites un sonido de tristeza y por cada falladas perdidas se quita una vida.
+
+El juego solo tiene 5 vidas y con cada vida que se pierda el objeto animado es más dificl de cachar
+de tal manera que hay que tener cuidado de no perder vidas para que el usuario pueda jugar sin tanta preocupación.
+
+Las siguientes letras sirven para que el juego tenga funciones:
+
+I    Mostrar/Quitar las instrucciones del juego
+P  Pausar/Despausar el juego
+G Grabar el juego
+C Cargar un juego guardado
+S Activar/Desactivar sonido
+
+GERENCIA:
+
+La GERENCIA pide que tengas mucho cuidado de elaborar todos los casos de prueba que se deban hacer 
+para corroborar que tu programación en el juego sea exitosa, ya que por ejemplo no puedo grabar un juego 
+cuando estoy viendo las instrucciones, pero si guardo un juego cuando el objeto animado se esta moviendo,
+al cargar el juego guardado se debe de ver exactamente igual que cuando estaba guardando el juego, mismo
+score, misma trayectoria, mismos intentos, sonido eliminado o no, etc. además te pide cuidar el aspecto del juego,
+que sea creativo, que simule un tiro parabolico, la documentación es importante, el uso del javadoc al inicio de la clase
+y en cada metodo (@autor @date@version @param @return @throws,etc ), asi como la documentación interna en los métodos,
+que se usa, como se usa, etc), la indentación no se te olvide, asi como el uso de espacios y líneas en blanco para
+separar código y se vea mas limpio, que se vean las vidas, ya sea con numero o pintadas, que se vea el score,
+cuida mucho los detalles. 
+Al terminar el juego se debe mostrar una pantalla de CREDITOS.
+
