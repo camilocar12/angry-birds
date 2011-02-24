@@ -29,9 +29,12 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 	public BallGame() {
 		
 		vidas = 5;
+		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
-		int posX = WIDTH / 2; // posX de la pelota
-		int posY = HEIGHT / 2; // posY de la pelota
+		int posX = WIDTH / 4; // posX de la pelota
+		int posY = HEIGHT / 4; // posY de la pelota
+		int posCanX = (WIDTH / 4) * 3;
+		int posCanY = (HEIGHT / 4) * 3;
 		
 		Image bola1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/basketball.gif"));
 		Image bola2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/basketball2.gif"));
@@ -46,6 +49,11 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 		
 		ball = new Pelota(posX, posY, bola1);
 		
+		Image  canasta = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/canasta.gif"));
+		basket = new Canasta(posCanX, posCanY, canasta);
+		
+		addKeyListener(this);
+		
 		Thread t = new Thread(this);
 		t.start();
 	}
@@ -57,6 +65,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 		
 			actualiza();
 			repaint();
+			checaColision();
 		
 			try	{
 				// El thread se duerme.
@@ -73,10 +82,45 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 		long tiempoTranscurrido = System.currentTimeMillis() - tiempoActual;
 		tiempoActual += tiempoTranscurrido;
 		animBall.actualiza(tiempoTranscurrido);
+	
+		switch (direccion) { // Para actualizar la direccion del cofre
+			
+			case 1: { // izquierda
+				
+				basket.setPosX(basket.getPosX() - 5);
+				break;
+			}
+			
+			case 2: { // derecha
+				
+				basket.setPosX(basket.getPosX() + 5);
+				break;
+			}
+		}
 	}
 	
 	public void checaColision() {
-	
+				
+		switch (direccion) { // Para que no se salga de la pantalla
+			
+			case 1: { // Se mueve a la izquierda
+				
+				if (basket.getPosX() < getWidth() / 2) { // Que no pase de la mitad de la pantalla
+					
+					basket.setPosX(basket.getPosX() + 5);
+				}
+				break;
+			}
+			
+			case 2: { // Se mueve a la derecha
+				
+				if (basket.getPosX() + basket.getAncho() > getWidth()) { // Que no se pase del Frame
+
+					basket.setPosX(basket.getPosX() - 5);
+				}
+				break;
+			}
+		}
 	}
 	
 	public void paint(Graphics g) {
@@ -100,6 +144,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 		if(ball != null) {
 			
 			g.drawImage(animBall.getImagen(), ball.getPosX(), ball.getPosY(), this);
+			g.drawImage(basket.getImagenI(), basket.getPosX(), basket.getPosY(), this);
 		}
 		
 		else {
@@ -109,7 +154,17 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 	}
 	
 	public void keyPressed(KeyEvent e) {
-	
+		
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) { // Si se presiona la flecha izquierda
+			
+			direccion = 1;
+		}
+		
+		else if (e.getKeyCode() == KeyEvent.VK_RIGHT) { // Si se presiona la flecha derecha
+		
+			direccion = 2;
+		}
+		
 	}
 	
 	public void keyTyped(KeyEvent e) {
@@ -117,8 +172,18 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 	}
 	
 	public void keyReleased(KeyEvent e) {
-	
+
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) { // Si se deja de presionar la flecha derecha
+			
+			direccion = 0;
+		}
+		
+		else if (e.getKeyCode() == KeyEvent.VK_RIGHT) { // Si se deja de presionar la flecha izquierda
+		
+			direccion = 0;
+		}
 	}
+	
 	public static void main (String args[]) {
 		
 		BallGame juego = new BallGame();
