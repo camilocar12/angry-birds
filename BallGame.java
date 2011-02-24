@@ -9,14 +9,6 @@ import java.awt.Toolkit;
 import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Vector;
 
 public class BallGame extends JFrame implements Runnable, KeyListener {
 	
@@ -28,8 +20,8 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 	private Image dbImage;
 	private Image fondo;
 	private Graphics dbg;
-	private Canasta basket;
 	private Pelota ball;
+	private Canasta basket;
 	private animacion animBall;
 	private long tiempoActual;
 	
