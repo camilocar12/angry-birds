@@ -31,8 +31,8 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 		vidas = 5;
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
-		int posX = WIDTH / 4; // posX de la pelota
-		int posY = HEIGHT / 4; // posY de la pelota
+		int posX = 0; // posX de la pelota
+		int posY = HEIGHT / 2; // posY de la pelota
 		int posCanX = (WIDTH / 4) * 3;
 		int posCanY = (HEIGHT / 4) * 3;
 		
