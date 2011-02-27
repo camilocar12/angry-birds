@@ -10,13 +10,21 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class BallGame extends JFrame implements Runnable, KeyListener {
+public class BallGame extends JFrame implements Runnable, KeyListener, MouseListener {
 	
 	private static final long serialVersionUID = -4561387616954048688L;
 	private static final int WIDTH = 1000;
 	private static final int HEIGHT = 625;
 	private int direccion;
 	private int vidas;
+	private int velX; //
+	private int velY; //
+	private int difX = 5; //
+	private int difY = 6; //
+	private int min; //
+	private int seg; //
+	private int posX; //
+	private int posY; //
 	private Image dbImage;
 	private Image fondo;
 	private Graphics dbg;
@@ -24,17 +32,23 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 	private Canasta basket;
 	private animacion animBall;
 	private long tiempoActual;
+	private boolean empieza;
 	
 	
 	public BallGame() {
 		
+		empieza = false;
 		vidas = 5;
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
-		int posX = 0; // posX de la pelota
-		int posY = HEIGHT / 2; // posY de la pelota
+		posX = 0; // posX de la pelota
+		posY = HEIGHT / 2; // posY de la pelota
 		int posCanX = (WIDTH / 4) * 3;
 		int posCanY = (HEIGHT / 4) * 3;
+		
+		velX = (int) (Math.random() * difX) + 10; // 
+		velY = -( (int)(Math.random() * difY) + 30); //
+		
 		
 		Image bola1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/basketball.gif"));
 		Image bola2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/basketball2.gif"));
@@ -53,9 +67,11 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 		basket = new Canasta(posCanX, posCanY, canasta);
 		
 		addKeyListener(this);
+		addMouseListener(this);
 		
 		Thread t = new Thread(this);
 		t.start();
+		
 	}
 	
 	public void run() {
@@ -97,6 +113,20 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 				break;
 			}
 		}
+		
+		if (empieza) {
+			velY++; //
+			ball.setPosX(ball.getPosX() + velX); //
+			ball.setPosY(ball.getPosY() + velY); //
+		}
+		
+		if(ball.getPosY() > HEIGHT){ // start
+			ball.setPosX(posX);
+			ball.setPosY(posY);
+			velX = (int) (Math.random() * difX) + 10;
+			velY = - ((int) (Math.random() * difY) + 30);
+		} // termina
+
 	}
 	
 	public void checaColision() {
@@ -121,6 +151,11 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 				break;
 			}
 		}
+		
+		if (ball.getPosY() > getHeight()) { //
+			
+			empieza = false;
+		} //
 	}
 	
 	public void paint(Graphics g) {
@@ -182,6 +217,60 @@ public class BallGame extends JFrame implements Runnable, KeyListener {
 		
 			direccion = 0;
 		}
+	}
+
+	public boolean estaDentro(MouseEvent e) {
+		
+		if ((e.getX() > ball.getPosX()) && (e.getX() < ball.getPosX() + ball.getAncho()) 
+			&& (e.getY() > ball.getPosY()) && (e.getY() < ball.getPosY() + ball.getAlto())) {
+			
+			return true;	
+		}
+		
+		else {
+			
+			return false;
+		}
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+ 
+		if (e.getButton() == MouseEvent.BUTTON1 && estaDentro(e)) {
+
+			empieza = true;
+		}
+	}
+
+	/**
+	 * Metodo <I>mouseClicked</I> sobrescrito de la interface <code>MouseMotionListener</code>.<P>
+	*/
+
+	public void mouseEntered(MouseEvent e) {
+		
+	}
+
+	/**
+	 * Metodo <I>mouseExited</I> sobrescrito de la interface <code>MouseMotionListener</code>.<P>
+	*/
+
+	public void mouseExited(MouseEvent e) {
+		
+	}
+
+	/**
+	 * Metodo <I>mousePressed</I> sobrescrito de la interface <code>MouseMotionListener</code>.<P>
+	*/
+
+	public void mousePressed(MouseEvent e) {
+		
+	}
+
+	/**
+	 * Metodo <I>mouseReleased</I> sobrescrito de la interface <code>MouseMotionListener</code>.<P>
+	*/
+
+	public void mouseReleased(MouseEvent e) {
+
 	}
 	
 	public static void main (String args[]) {
