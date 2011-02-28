@@ -42,7 +42,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
 		posX = 0; // posX de la pelota
-		posY = HEIGHT / 2; // posY de la pelota
+		posY = HEIGHT - 70; // posY de la pelota
 		int posCanX = (WIDTH / 4) * 3;
 		int posCanY = (HEIGHT / 4) * 3;
 		
@@ -152,10 +152,13 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			}
 		}
 		
-		if (ball.getPosY() > getHeight()) { //
+		if (ball.intersecta(basket)) {
 			
+			ball.setPosX(posX);
+			ball.setPosY(posY);
 			empieza = false;
-		} //
+		}
+		
 	}
 	
 	public void paint(Graphics g) {
