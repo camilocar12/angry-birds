@@ -33,6 +33,9 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private animacion animBall;
 	private long tiempoActual;
 	private boolean empieza;
+	private SoundClip swish; //
+	private SoundClip buzzer; //
+	
 	
 	
 	public BallGame() {
@@ -42,7 +45,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
 		posX = 0; // posX de la pelota
-		posY = HEIGHT - 70; // posY de la pelota
+		posY = HEIGHT - 70; // posY de la pelota 30 pix mide el marco
 		int posCanX = (WIDTH / 4) * 3;
 		int posCanY = (HEIGHT / 4) * 3;
 		
@@ -65,6 +68,9 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		
 		Image  canasta = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/canasta.gif"));
 		basket = new Canasta(posCanX, posCanY, canasta);
+		
+		swish = new SoundClip("sounds/swish.wav"); //
+		buzzer = new SoundClip("sounds/buzzer.wav"); //
 		
 		addKeyListener(this);
 		addMouseListener(this);
@@ -125,6 +131,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			ball.setPosY(posY);
 			velX = (int) (Math.random() * difX) + 10;
 			velY = - ((int) (Math.random() * difY) + 30);
+			empieza = false;
 		} // termina
 
 	}
@@ -156,6 +163,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			
 			ball.setPosX(posX);
 			ball.setPosY(posY);
+			swish.play();//
 			empieza = false;
 		}
 		
