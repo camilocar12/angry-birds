@@ -31,6 +31,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private Image dbImage;
 	private Image fondo;
 	private Image gameover;
+	private Image instrucciones;
 	private Graphics dbg;
 	private Pelota ball;
 	private Canasta basket;
@@ -39,6 +40,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private boolean empieza;
 	private boolean pause;
 	private boolean sonido; //
+	private boolean opt; // booleano para las instrucciones
 	private SoundClip swish; //
 	private SoundClip buzzer; //
 	
@@ -49,6 +51,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		empieza = false;
 		pause = false;
 		sonido = true;
+		opt = false;
 		vidas = 5;
 		tiroFallado = 0; //
 		score = 0; //
@@ -56,6 +59,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
 		gameover = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/creditos.jpg")); // imagen gameover
+		instrucciones = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/instrucciones.jpg")); // instrucciones
 		posX = 0; // posX de la pelota
 		posY = HEIGHT - 70; // posY de la pelota 30 pix mide el marco
 		int posCanX = (WIDTH / 4) * 3;
@@ -96,18 +100,20 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		
 		tiempoActual = System.currentTimeMillis();
 		
-		while(vidas > 0 && pause == false) {
+		while(vidas > 0) {
 		
-			actualiza();
-			checaColision();
-			repaint();
+			if (!pause) {
+				actualiza();
+				checaColision();
+				repaint();
 		
-			try	{
-				// El thread se duerme.
-				Thread.sleep (20);
-			}
-			catch (InterruptedException ex)	{
-				System.out.println("Error en " + ex.toString());
+				try	{
+					// El thread se duerme.
+					Thread.sleep (20);
+				}
+				catch (InterruptedException ex)	{
+					System.out.println("Error en " + ex.toString());
+				}
 			}
 		}
 	}
@@ -232,6 +238,10 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 				if (sonido == false) {
 					g.drawString("Sonido Desactivado!", 50, 80);
 				}
+				if (opt == true) {
+					
+					g.drawImage(instrucciones, 0, 0, getSize().width, getSize().height, this);
+				}
 			}
 		
 			else {
@@ -260,14 +270,14 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		
 		if (e.getKeyCode() == KeyEvent.VK_P) { // Si se presiona la tecla P
 		
-			if (pause == true) {
+			if (pause == false) {
 				
-				pause = false;
+				pause = true;
 			}
 	
 			else {
 			
-				pause = true;
+				pause = false;
 			}
 		}
 
@@ -281,6 +291,19 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			else {
 				
 				sonido = false;
+			}
+		}
+		
+		if (e.getKeyCode() == KeyEvent.VK_I) { // Si se presiona la tecla I
+			
+			if (opt == false) {
+				
+				opt = true;
+			}
+			
+			else {
+				
+				opt = false;
 			}
 		}
 	}
