@@ -30,6 +30,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private int posY; //
 	private Image dbImage;
 	private Image fondo;
+	private Image gameover;
 	private Graphics dbg;
 	private Pelota ball;
 	private Canasta basket;
@@ -52,6 +53,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		dificultad = 10;
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
+		gameover = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/gameover.jpg")); // imagen gameover
 		posX = 0; // posX de la pelota
 		posY = HEIGHT - 70; // posY de la pelota 30 pix mide el marco
 		int posCanX = (WIDTH / 4) * 3;
@@ -91,6 +93,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	public void run() {
 		
 		tiempoActual = System.currentTimeMillis();
+		
 		while(vidas > 0 && pause == false) {
 		
 			actualiza();
@@ -166,6 +169,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			velY = - ((int) (Math.random() * difY) + 30);
 			empieza = false;
 			tiroFallado++;
+			buzzer.play();
 			if (tiroFallado == 3) {
 				
 				vidas--;
@@ -203,20 +207,27 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	
 	public void paint1(Graphics g) {
 		
-		g.drawImage(fondo, 0, 0, getSize().width, getSize().height, this);
+		if(vidas > 0) {
+			g.drawImage(fondo, 0, 0, getSize().width, getSize().height, this);
 				
-		if(ball != null) {
+			if(ball != null) {
 			
-			g.drawImage(animBall.getImagen(), ball.getPosX(), ball.getPosY(), this);
-			g.drawImage(basket.getImagenI(), basket.getPosX(), basket.getPosY(), this);
-			g.setColor(Color.white);
-			g.setFont(new Font("Serif", Font.BOLD, 18));
-			g.drawString("Vidas: " + vidas + " Score: " + score, 50, 50);
-		}
+				g.drawImage(animBall.getImagen(), ball.getPosX(), ball.getPosY(), this);
+				g.drawImage(basket.getImagenI(), basket.getPosX(), basket.getPosY(), this);
+				g.setColor(Color.white);
+				g.setFont(new Font("Serif", Font.BOLD, 18));
+				g.drawString("Vidas: " + vidas + " Score: " + score, 50, 50);
+			}
+		
+			else {
+			
+				g.drawString("No se cargo la imagen...", 20, 20);
+			}
+		}	
 		
 		else {
 			
-			g.drawString("No se cargo la imagen...", 20, 20);
+			g.drawImage(gameover, 0, 0, this);
 		}
 	}
 	
