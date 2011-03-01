@@ -32,6 +32,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private Image fondo;
 	private Image gameover;
 	private Image instrucciones;
+	private Image pImage;
 	private Graphics dbg;
 	private Pelota ball;
 	private Canasta basket;
@@ -58,6 +59,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		dificultad = 10;
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
+		pImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/pause.gif")); // fondo del JFrame
 		gameover = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/creditos.jpg")); // imagen gameover
 		instrucciones = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/instrucciones.jpg")); // instrucciones
 		posX = 0; // posX de la pelota
@@ -105,6 +107,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			if (!pause) {
 				actualiza();
 				checaColision();
+			}
 				repaint();
 		
 				try	{
@@ -114,7 +117,6 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 				catch (InterruptedException ex)	{
 					System.out.println("Error en " + ex.toString());
 				}
-			}
 		}
 	}
 	
@@ -235,12 +237,19 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 				g.setFont(new Font("Serif", Font.BOLD, 18));
 				g.drawString("Vidas: " + vidas + " Score: " + score, 50, 50);
 	
-				if (sonido == false) {
+				if (!sonido) {
+
 					g.drawString("Sonido Desactivado!", 50, 80);
 				}
-				if (opt == true) {
+				
+				if (opt) {
 					
 					g.drawImage(instrucciones, 0, 0, getSize().width, getSize().height, this);
+				}
+				
+				if (pause && !opt) {
+				
+					g.drawImage(pImage, 400, 190, this);
 				}
 			}
 		
@@ -267,45 +276,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		
 			direccion = 2;
 		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_P) { // Si se presiona la tecla P
-		
-			if (pause == false) {
-				
-				pause = true;
-			}
-	
-			else {
-			
-				pause = false;
-			}
-		}
 
-		if (e.getKeyCode() == KeyEvent.VK_S) { // Si se presiona la tecla S
-
-			if (sonido == false) {
-				
-				sonido = true;
-			}
-			
-			else {
-				
-				sonido = false;
-			}
-		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_I) { // Si se presiona la tecla I
-			
-			if (opt == false) {
-				
-				opt = true;
-			}
-			
-			else {
-				
-				opt = false;
-			}
-		}
 	}
 	
 	public void keyTyped(KeyEvent e) {
@@ -323,6 +294,24 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		
 			direccion = 0;
 		}
+
+		if (e.getKeyCode() == KeyEvent.VK_P) { // Si se presiona la tecla P
+		
+			pause = !pause;
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_S) { // Si se presiona la tecla S
+			
+			sonido = !sonido;
+
+		}
+		
+		if (e.getKeyCode() == KeyEvent.VK_I) { // Si se presiona la tecla I
+			
+			opt = !opt;
+			pause = !pause;
+		}
+
 	}
 
 	public boolean estaDentro(MouseEvent e) {
