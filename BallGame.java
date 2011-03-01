@@ -38,6 +38,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private long tiempoActual;
 	private boolean empieza;
 	private boolean pause;
+	private boolean sonido; //
 	private SoundClip swish; //
 	private SoundClip buzzer; //
 	
@@ -47,13 +48,14 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		
 		empieza = false;
 		pause = false;
+		sonido = true;
 		vidas = 5;
 		tiroFallado = 0; //
 		score = 0; //
 		dificultad = 10;
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
-		gameover = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/gameover.jpg")); // imagen gameover
+		gameover = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/creditos.jpg")); // imagen gameover
 		posX = 0; // posX de la pelota
 		posY = HEIGHT - 70; // posY de la pelota 30 pix mide el marco
 		int posCanX = (WIDTH / 4) * 3;
@@ -169,7 +171,12 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			velY = - ((int) (Math.random() * difY) + 30);
 			empieza = false;
 			tiroFallado++;
-			buzzer.play();
+	
+			if (sonido == true) {
+			
+				buzzer.play();
+			}
+	
 			if (tiroFallado == 3) {
 				
 				vidas--;
@@ -184,7 +191,11 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			ball.setPosY(posY);
 			velX = (int) (Math.random() * difX) + 10; //
 			velY = - ((int) (Math.random() * difY) + 30); //
-			swish.play();//
+	
+			if (sonido == true) {
+				swish.play();//
+			}
+	
 			score += 2;
 			empieza = false;
 		}
@@ -217,6 +228,10 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 				g.setColor(Color.white);
 				g.setFont(new Font("Serif", Font.BOLD, 18));
 				g.drawString("Vidas: " + vidas + " Score: " + score, 50, 50);
+	
+				if (sonido == false) {
+					g.drawString("Sonido Desactivado!", 50, 80);
+				}
 			}
 		
 			else {
@@ -243,7 +258,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			direccion = 2;
 		}
 		
-		if (e.getKeyCode() == KeyEvent.VK_P) { // Si se presiona la flecha derecha
+		if (e.getKeyCode() == KeyEvent.VK_P) { // Si se presiona la tecla P
 		
 			if (pause == true) {
 				
@@ -253,6 +268,19 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			else {
 			
 				pause = true;
+			}
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_S) { // Si se presiona la tecla S
+
+			if (sonido == false) {
+				
+				sonido = true;
+			}
+			
+			else {
+				
+				sonido = false;
 			}
 		}
 	}
