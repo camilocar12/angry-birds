@@ -17,10 +17,13 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private static final int HEIGHT = 625;
 	private int direccion;
 	private int vidas;
+	private int tiroFallado;
+	private int dificultad; //
+	private int score; //
 	private int velX; //
 	private int velY; //
-	private int difX = 5; //
-	private int difY = 6; //
+	private int difX = 3; //
+	private int difY = 4; //
 	private int min; //
 	private int seg; //
 	private int posX; //
@@ -33,6 +36,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private animacion animBall;
 	private long tiempoActual;
 	private boolean empieza;
+	private boolean pause;
 	private SoundClip swish; //
 	private SoundClip buzzer; //
 	
@@ -41,7 +45,11 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	public BallGame() {
 		
 		empieza = false;
+		pause = false;
 		vidas = 5;
+		tiroFallado = 0; //
+		score = 0; //
+		dificultad = 10;
 		direccion = 0;
 		fondo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/fondo.jpg")); // fondo del JFrame
 		posX = 0; // posX de la pelota
@@ -83,11 +91,11 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	public void run() {
 		
 		tiempoActual = System.currentTimeMillis();
-		while(vidas > 0) {
+		while(vidas > 0 && pause == false) {
 		
 			actualiza();
-			repaint();
 			checaColision();
+			repaint();
 		
 			try	{
 				// El thread se duerme.
@@ -109,13 +117,13 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			
 			case 1: { // izquierda
 				
-				basket.setPosX(basket.getPosX() - 5);
+				basket.setPosX(basket.getPosX() - dificultad);
 				break;
 			}
 			
 			case 2: { // derecha
 				
-				basket.setPosX(basket.getPosX() + 5);
+				basket.setPosX(basket.getPosX() + dificultad);
 				break;
 			}
 		}
@@ -126,14 +134,6 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			ball.setPosY(ball.getPosY() + velY); //
 		}
 		
-		if(ball.getPosY() > HEIGHT){ // start
-			ball.setPosX(posX);
-			ball.setPosY(posY);
-			velX = (int) (Math.random() * difX) + 10;
-			velY = - ((int) (Math.random() * difY) + 30);
-			empieza = false;
-		} // termina
-
 	}
 	
 	public void checaColision() {
@@ -144,7 +144,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 				
 				if (basket.getPosX() < getWidth() / 2) { // Que no pase de la mitad de la pantalla
 					
-					basket.setPosX(basket.getPosX() + 5);
+					basket.setPosX(basket.getPosX() + dificultad);
 				}
 				break;
 			}
@@ -153,17 +153,35 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 				
 				if (basket.getPosX() + basket.getAncho() > getWidth()) { // Que no se pase del Frame
 
-					basket.setPosX(basket.getPosX() - 5);
+					basket.setPosX(basket.getPosX() - dificultad);
 				}
 				break;
 			}
 		}
-		
+
+		if(ball.getPosY() > HEIGHT){ // start
+			ball.setPosX(posX);
+			ball.setPosY(posY);
+			velX = (int) (Math.random() * difX) + 10;
+			velY = - ((int) (Math.random() * difY) + 30);
+			empieza = false;
+			tiroFallado++;
+			if (tiroFallado == 3) {
+				
+				vidas--;
+				tiroFallado = 0;
+				dificultad-= 2;
+			}
+		} // termina		
+
 		if (ball.intersecta(basket)) {
 			
 			ball.setPosX(posX);
 			ball.setPosY(posY);
+			velX = (int) (Math.random() * difX) + 10; //
+			velY = - ((int) (Math.random() * difY) + 30); //
 			swish.play();//
+			score += 2;
 			empieza = false;
 		}
 		
@@ -191,6 +209,9 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			
 			g.drawImage(animBall.getImagen(), ball.getPosX(), ball.getPosY(), this);
 			g.drawImage(basket.getImagenI(), basket.getPosX(), basket.getPosY(), this);
+			g.setColor(Color.white);
+			g.setFont(new Font("Serif", Font.BOLD, 18));
+			g.drawString("Vidas: " + vidas + " Score: " + score, 50, 50);
 		}
 		
 		else {
@@ -211,6 +232,18 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			direccion = 2;
 		}
 		
+		if (e.getKeyCode() == KeyEvent.VK_P) { // Si se presiona la flecha derecha
+		
+			if (pause == true) {
+				
+				pause = false;
+			}
+	
+			else {
+			
+				pause = true;
+			}
+		}
 	}
 	
 	public void keyTyped(KeyEvent e) {
