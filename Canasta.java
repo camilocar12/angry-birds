@@ -10,6 +10,6 @@ public class Canasta extends Objeto {
 	
 	public Rectangle getPerimetro() { 
 		
-		return new Rectangle(getPosX() + 4, getPosY() + 81, 109, 8);
+		return new Rectangle(getPosX() + 31, getPosY() + 81, 62, 8);
 	}
 }
