@@ -1,3 +1,12 @@
+/**
+ * @(#)BallGame.java
+ *
+ *
+ * @author Ricardo Cruz Shuyi Li
+ * @version 1.00 2011/3/1
+ */
+
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Color;
@@ -9,6 +18,13 @@ import java.awt.Toolkit;
 import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException; 
 
 public class BallGame extends JFrame implements Runnable, KeyListener, MouseListener {
 	
@@ -18,16 +34,16 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private int direccion;
 	private int vidas;
 	private int tiroFallado;
-	private int dificultad; //
-	private int score; //
-	private int velX; //
-	private int velY; //
-	private int difX = 3; //
-	private int difY = 4; //
-	private int min; //
-	private int seg; //
-	private int posX; //
-	private int posY; //
+	private int dificultad; 
+	private int score; 
+	private int velX; 
+	private int velY; 
+	private int difX = 3; 
+	private int difY = 4; 
+	private int min; 
+	private int seg; 
+	private int posX; 
+	private int posY; 
 	private Image dbImage;
 	private Image fondo;
 	private Image gameover;
@@ -40,15 +56,20 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	private long tiempoActual;
 	private boolean empieza;
 	private boolean pause;
-	private boolean sonido; //
+	private boolean sonido; 
 	private boolean opt; // booleano para las instrucciones
-	private SoundClip swish; //
-	private SoundClip buzzer; //
-	
-	
-	
+	private SoundClip swish; 
+	private SoundClip buzzer;
+	private String nombreArchivo;    //Nombre del archivo.
+	private int arreglo[]=new int[10];	
+
+    /**
+     * Creates a new instance of <code>Examen</code>.
+     */
+     	
 	public BallGame() {
 		
+		nombreArchivo = "JuegosGrabados.txt";
 		empieza = false;
 		pause = false;
 		sonido = true;
@@ -97,7 +118,15 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		t.start();
 		
 	}
-	
+
+	/** 
+	 * Metodo <I>run</I> sobrescrito de la clase <code>Thread</code>.<P>
+     * En este metodo se ejecuta el hilo, es un ciclo indefinido donde se incrementa
+     * la posicion en x o y dependiendo de la direccion, finalmente 
+     * se repinta el <code>JFrame</code> y luego manda a dormir el hilo.
+     * 
+     */	
+     	
 	public void run() {
 		
 		tiempoActual = System.currentTimeMillis();
@@ -110,16 +139,23 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			}
 				repaint();
 		
-				try	{
-					// El thread se duerme.
-					Thread.sleep (20);
-				}
-				catch (InterruptedException ex)	{
-					System.out.println("Error en " + ex.toString());
-				}
+			try	{
+				// El thread se duerme.
+				Thread.sleep (20);
+			}
+			catch (InterruptedException ex)	{
+				System.out.println("Error en " + ex.toString());
+			}
+		
+
 		}
 	}
 	
+	/**
+	 * Metodo usado para actualizar la posicion del objeto pelota.
+	 * 
+	 */	
+	 
 	public void actualiza() {
 
 		long tiempoTranscurrido = System.currentTimeMillis() - tiempoActual;
@@ -148,7 +184,12 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		}
 		
 	}
-	
+
+	/**
+	 * Metodo usado para checar las colisiones del objeto canasta y pelota
+	 * con las orillas del <code>Applet</code>.
+	 */
+	 
 	public void checaColision() {
 				
 		switch (direccion) { // Para que no se salga de la pantalla
@@ -209,7 +250,15 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		}
 		
 	}
-	
+
+	/**
+	 * Metodo <I>paint</I> sobrescrito de la clase <code>Applet</code>,
+	 * heredado de la clase Container.<P>
+	 * En este metodo se dibuja la imagen con la posicion actualizada,
+	 * ademas que cuando la imagen es cargada te despliega una advertencia.
+	 * @param g es el <code>objeto grafico</code> usado para dibujar.
+	 */
+	 	
 	public void paint(Graphics g) {
 		
 		if(dbImage == null) {
@@ -224,6 +273,13 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		g.drawImage(dbImage, 0, 0, this);
 	}
 	
+	/**
+	 * Metodo <I>paint1</I> 
+	 * En este metodo se dibuja la imagen con la posicion actualizada,
+	 * ademas que cuando la imagen es cargada te despliega una advertencia.
+	 * @param g es el <code>objeto grafico</code> usado para dibujar.
+	 */
+	 
 	public void paint1(Graphics g) {
 		
 		if(vidas > 0) {
@@ -265,6 +321,12 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		}
 	}
 	
+	/**
+	 * Metodo <I>keyPressed</I> sobrescrito de la interface <code>KeyListener</code>.<P>
+	 * En este metodo maneja el evento que se genera al presionar cualquier la tecla.
+	 * @param e es el <code>evento</code> generado al presionar las teclas.
+	 */
+	 
 	public void keyPressed(KeyEvent e) {
 		
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) { // Si se presiona la flecha izquierda
@@ -279,10 +341,22 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 
 	}
 	
+    /**
+	 * Metodo <I>keyTyped</I> sobrescrito de la interface <code>KeyListener</code>.<P>
+	 * En este metodo maneja el evento que se genera al presionar una tecla que no es de accion.
+	 * @param e es el <code>evento</code> que se genera en al presionar las teclas.
+	 */
+	 
 	public void keyTyped(KeyEvent e) {
 	
 	}
-	
+
+    /**
+	 * Metodo <I>keyReleased</I> sobrescrito de la interface <code>KeyListener</code>.<P>
+	 * En este metodo maneja el evento que se genera al soltar la tecla presionada.
+	 * @param e es el <code>evento</code> que se genera en al soltar las teclas.
+	 */
+	 	
 	public void keyReleased(KeyEvent e) {
 
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) { // Si se deja de presionar la flecha derecha
@@ -311,9 +385,39 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 			opt = !opt;
 			pause = !pause;
 		}
+		
+		if (e.getKeyCode() == KeyEvent.VK_C) { // Si se presiona la tecla C
+		
+			try{
+				
+				leerJuego(arreglo); // Carga el juego del archivo
+			}
 
+			catch(IOException h){
+
+				System.out.println("Error en " + e.toString());
+			}
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_G) { // Si se presiona la tecla G
+
+			try{
+
+				grabaJuego();    //Graba el juego en el archivo.
+			}
+
+			catch(IOException h){
+	
+				System.out.println("Error en " + e.toString());
+			}
+		}
 	}
-
+    /**
+	 * Metodo utilizado para checar si el puntero esta dentro de la pelota
+	 * 
+	 * @param e es el <code>evento</code> que se genera en al soltar la tecla.
+	 */
+	 
 	public boolean estaDentro(MouseEvent e) {
 		
 		if ((e.getX() > ball.getPosX()) && (e.getX() < ball.getPosX() + ball.getAncho()) 
@@ -328,6 +432,12 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 		}
 	}
 	
+    /**
+	 * Metodo <I>mouseClicked</I> sobrescrito de la interface <code>MouseMotionListener</code>.<P>
+	 * En este metodo maneja el evento que se genera al presionar una tecla del mouse.
+	 * @param e es el <code>evento</code> que se genera en al presionar la tecla.
+	 */
+	 
 	public void mouseClicked(MouseEvent e) {
  
 		if (e.getButton() == MouseEvent.BUTTON1 && estaDentro(e)) {
@@ -337,7 +447,7 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	}
 
 	/**
-	 * Metodo <I>mouseClicked</I> sobrescrito de la interface <code>MouseMotionListener</code>.<P>
+	 * Metodo <I>mouseEntered</I> sobrescrito de la interface <code>MouseMotionListener</code>.<P>
 	*/
 
 	public void mouseEntered(MouseEvent e) {
@@ -367,7 +477,61 @@ public class BallGame extends JFrame implements Runnable, KeyListener, MouseList
 	public void mouseReleased(MouseEvent e) {
 
 	}
-	
+ 
+ 	/*
+ 	 *Metodo utilizado para grabar el juego
+ 	 */
+ 	 
+   public void grabaJuego() throws IOException{
+
+    	PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
+    	fileOut.println(ball.getPosX()+"#"+ ball.getPosY()+"#"+basket.getPosX()+"#"+basket.getPosY()+"#"+velX+"#"+velY+"#"+dificultad
+    	+"#"+vidas+"#"+tiroFallado+"#"+score);
+
+    	fileOut.close();
+    }
+    
+ 	/*
+ 	 *Metodo utilizado para cargar el juego grabado
+ 	 */
+ 	 
+	public void leerJuego(int arrgle[]) throws IOException {
+
+		String dato;
+
+		BufferedReader fileIn = new BufferedReader( new FileReader(nombreArchivo));
+
+		while ((dato = fileIn.readLine()) != null) {
+
+                String[]p=dato.split("#");
+                for(int k=0; k<p.length; k++) {
+ 
+                    arreglo[k]=Integer.parseInt(p[k]);
+                }
+
+                if (empieza=true) {
+		            ball.setPosX(arreglo[0]);
+		            ball.setPosY(arreglo[1]);
+		            basket.setPosX(arreglo[2]);
+		            basket.setPosY(arreglo[3]);
+		            velX= arreglo[4];
+		            velY= arreglo[5];
+		            dificultad =arreglo[6];
+		            vidas= arreglo[7];
+		            tiroFallado= arreglo[8];
+	                score= arreglo[9];
+                }
+		}
+        
+        fileIn.close();
+	}
+
+    /**
+     * Metodo principal
+     *
+     * @param args es un arreglo de tipo <code>String</code> de linea de comandos
+     */
+     
 	public static void main (String args[]) {
 		
 		BallGame juego = new BallGame();
